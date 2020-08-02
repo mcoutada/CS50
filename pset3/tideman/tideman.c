@@ -189,7 +189,7 @@ void add_pairs(void)
     //   w=3 |   4      2      3      -
     //
     // We need to translate these results into winner/loser pairs.
-    // For that, we use a "pairs" array that has a "winner" and "loser" methods
+    // For that, we use a "pairs" array that has a "winner" and "loser" attributes
     // So, for our A,D pair example:
     // preferences[A][D] = 1 --> pairs[AD].loser = A
     // preferences[D][A] = 4 --> pairs[AD].winner = D
@@ -206,7 +206,7 @@ void add_pairs(void)
     //     D |   D,A       D,B       D,C       D,D
     //
     // But we don't need to pair a candidate with himself (middle diagonal)
-    // Neither we need B,A if we already have the A,B pair, as our array has the "winner", "loser" methods (B,A will just be the opposite of A,B)
+    // Neither we need B,A if we already have the A,B pair, as our array has the "winner", "loser" attributes (B,A will just be the opposite of A,B)
     //
     //       |    A         B         C         D
     //     ------------------------------------------
@@ -309,14 +309,15 @@ void lock_pairs(void)
 
     // It's probably useful to read some graph theory first, and becoming familiar with terms like "adjacency matrix" "Depth First Search" "transverse". And also see "How to Detect Cycle in Directed Graph"
     // There's some theory behind this function that we didn't see yet in the course.
+    // Grabbing pen an paper to draw the examples I gonna explain, it will make your life much easier
 
     // How we detect a cycle?
-    // If A-->B exists, a cycle exists if there's a way to depart from B and reach A
+    // If the edge A-->B exists, a cycle exists if there's a way to depart from B and reach A
     // The key here is to understand that the edges to build this alternative way to reach "A" HAVE TO BE LOCKED
     // why? Because we already sorted them by victory strength, so we start processing good guys, locking them, then look if any of the next ones create a loop
     // The locked array is our graph, and it’s dynamic, it’s empty on the first iteration (that’s why we can safely lock the first edge, it has nothing to cycle with), and starts getting bigger (or equal, if we don’t lock) over the next iterations (edges being processed), therefore we have to do more tests for later edges in order to safely lock them.
     // for instance, we first process A-->B, there's no locked edge yet as it's the first one, so we lock it. Then, we process B-->C
-    // the first question we ask is if B-->C generates a loop in our graph (which is only A-->B, so we ask if the edge being processed == B-->A) it’s not, so we lock B-->C.
+    // let´s say we lock  A-->B, the next question we ask is if B-->C generates a loop in our graph (which is only A-->B, so we ask if the edge B-->C == B-->A) it’s not, so we lock B-->C.
     // Read this exercise's description part carefully:
     // "Tideman algorithm must be careful to avoid creating cycles in the candidate graph. How does it do this? The algorithm locks in the strongest edges first, since those are arguably the most significant. In particular, the Tideman algorithm specifies that matchup edges should be “locked in” to the graph one at a time, based on the “strength” of the victory (the more people who prefer a candidate over their opponent, the stronger the victory). So long as the edge can be locked into the graph without creating a cycle, the edge is added; otherwise, the edge is ignored."
 
@@ -341,14 +342,14 @@ void lock_pairs(void)
     // iteration 2: Z-->K
     // iteration 3: F-->E   <--LOOP! E-->F-->E
 
-    // But the solution doesn't change, we need to see if the edge being processed fits in the extremes of some chain that we can build with 1, 2 or n of the already good processed edges
+    // But this doesn't change our solution's approach, we need to see if the edge being processed fits in the extremes of some chain that we can build with 1, 2 or n of the already good processed edges
 
     // There are several ways to do this, but one of simplest ones is:
     // We are processing H-->E
     // does E-->H exist in the locked array? If so, we found a 2 edges cycle (E-->H-->E), so we skip locking H-->E
     // if not, let's look in the locked array if we can find a good guy to hook up at the beginning of our bad guy, and see if the new extremes generate a loop
-    // Let's say, we found F-->H in locked, ok, hook it up, now we have F-->H-->E (good guy hooked behind bad guy)
-    // does E-->F exist among our good guys? (is E-->F locked?) if so, we found a 3 edges cycle (E-->F-->H-->E), so we skip locking H-->E
+    // Let's say, we found F-->H in locked, ok, we hook it up, now we have F-->H-->E (good guy hooked behind bad guy)
+    // now, we check if E-->F exists among our good guys (is E-->F locked?) if so, we found a 3 edges cycle (E-->F-->H-->E), so we skip locking H-->E
     // if not, hook up another good guy at the beginning of the chain and check the new extremes
     // And so on...
     // If there’s no good guys left to hook up, then it’s safe to lock H-->E
@@ -359,11 +360,11 @@ void lock_pairs(void)
     //         loop all pairs from 0 to pair_count (remember, they are already sorted by victory strength)
     //             ask if the pair being processed creates a cycle [call closesloop(pairs[i].winner, pairs[i].loser)]
     //             if winner-->looser doesn't create a cycle, then lock it (locked[pairs[i].winner][pairs[i].loser] = true)
-    //             if it creates a cycle, just ignore it, the locked matrix is previously defaulted to false by the code provided by cs50    <--(while this is true, don't ignore it, write false, see my notes at the end on how check50 works)
+    //             if it creates a cycle, just ignore it, the locked matrix is previously defaulted to false by the code provided by cs50    <--(while this is true, don't ignore it, set it to false, see my notes at the end on how check50 works)
 
     //     Call closesloop:
     //         we receive the parameters (pairs[i].winner, pairs[i].loser) and call it (A, B) for clarity
-    //         We are processing A-->B, so, Base case: is locked[B][A] = true? If so, return true as there’s a cycle A-->B-->A
+    //         We are processing A-->B, so (Base case) is locked[B][A] = true? If so, return true as there’s a cycle A-->B-->A
     //         if not, loop through the already locked edges, and search for an edge pointing to our edge's tail (for example, C-->A):
     //             C-->A is locked, hook it up behind, and call closesloop recursively:
     //                 This is an important step, we now have C-->A-->B, and have to look if B-->C was previously locked, in order to avoid the cycle C-->A-->B-->C, if so, A-->B should not be locked.
@@ -390,7 +391,7 @@ void lock_pairs(void)
     // 2-->3
     // 3-->1
 
-    // We see there's a cycle: 1-->2-->3-->1
+    // (We see there's a cycle: 1-->2-->3-->1)
 
     // (It's read left to right, top to bottom)
     // iteration   locked array      closesloop(A,B)    B-->A in locked?      ?-->A in locked?            Result
@@ -403,11 +404,11 @@ void lock_pairs(void)
     // check50 notes:
     // there are 2 important things to know about how check50 tests this function, that I realized them while debugging
     // 1. assume pairs[i].winner might be == pairs[i].loser
-    // Even though I added logic in add_pairs to prevent it, check50 seems to test our functions separately, so we need to prevent these cases
+    // Even though I added logic in add_pairs to prevent it, check50 seems to test tideman functions separately, so we need to prevent these cases
 
     // 2. Don't assume locked[pairs[i].winner][pairs[i].loser] == false by default
     // even though this is done at the beginning by the code provided by cs50, again, check50 seems to be overwriting it with nothing
-    // So basically write either true or false on every locked[pairs[i].winner][pairs[i].loser]
+    // So basically write either true or false on every locked[pairs[i].winner][pairs[i].loser] when they are iterated
     // 3. (bonus) when I solved 2, logic for 1 wasn't needed (it makes sense that our lock_pairs function doesn’t lock a-->a)... check it just in case...
 
     // If check50 fails to pass "final pair" or "middle pair" and you already did the above:
@@ -425,7 +426,8 @@ void lock_pairs(void)
         locked[pairs[i].winner][pairs[i].loser] = !closesloop(pairs[i].winner, pairs[i].loser);
     }
 }
-
+// the basic implementation of the closesloop algorithm we explained above is:
+//
 // bool closesloop(int a, int b)
 // {
 //     // base case
@@ -449,7 +451,7 @@ void lock_pairs(void)
 
 // closesloop: improving the algorithm
 // Now that we understand it, let's improve a little this algorithm.
-// Why are we going to hook up good guys behind a-->b if maybe nothing fits in front? We need to connect both extremes in order to have a cycle
+// Why are we going to hook up good guys behind a-->b if maybe nothing fits in front? We need to be able to connect both extremes in order to have a cycle
 // Let's apply the "good guys logic" to both extremes of a-->b
 
 // bool closesloop(int a, int b)
@@ -485,7 +487,7 @@ void lock_pairs(void)
 // closesloop: second improvement
 // if we find b-->i, let's ask if i-->b is locked, if so, there's no point of looking for j-->a as we already have a 3 nodes cycle i-->a-->b-->i
 // in fact, we will find j-->a, and it will be == b-->i, so let's change an array scan for just one operation
-// if we found b-->i (and we know already i-->b is not locked), we look for j-->a, so now have j-->a-->b-->i, the next possibility is a 4 nodes cycle, so we ask recursively if if i-->j exists
+// but if we found b-->i (and we know already i-->b is not locked), then we look for j-->a, so now have j-->a-->b-->i, the next possibility is a 4 nodes cycle, so we ask recursively if if i-->j exists
 
 bool closesloop(int a, int b)
 {

@@ -1,0 +1,8 @@
+Guess the number - binary search [the user doesn't lie]
+https://scratch.mit.edu/projects/402060960
+
+Soccer game
+https://scratch.mit.edu/projects/400438593
+
+Guess the number - binary search [the user could lie]
+https://scratch.mit.edu/projects/400826536/

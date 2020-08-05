@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
             fileNoID++;
         }
         // take the 512 bytes read from inFile (and saved into chnkBuff) and write it into outFile
+        // note: if you want to to run this script with cards.raw (instead of check50), you will need to execute the command below only if (fileNoID > 0), this is because cards.raw comes with some garbage until reaching the first header, I recommend you to download it and open it with an hex editor (see if you find the easter egg!)
         fwrite(chnkBuff, sizeof(chnkBuff), 1, outFile);
     }
 

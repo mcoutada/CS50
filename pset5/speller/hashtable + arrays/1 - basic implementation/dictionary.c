@@ -6,21 +6,19 @@
 #include <ctype.h>   //this is needed for tolower
 #include <stdio.h>   // this is needed for NULL, FILE datatype, fopen, fclose, fscanf
 #include <strings.h> //this is needed for strcasecmp
-#define N 25000
+#define N 143091
 #define M 10
 
-char table[N][M][45];
+char table[N][M][45]; // as this is declared at file scpe, all array elements are initialized to 0
 
 unsigned int dic_wrds_cnt = 0;
 
 unsigned int hash(const char *s)
 {
-
-    // djb2a hash  Ref: http://www.cse.yorku.ca/~oz/hash.html
-    unsigned long hash = 5381;
+    unsigned long hash = 0;
     while (*s)
     {
-        hash = ((hash << 5) + hash) ^ *s++; //  hash = hash * 33 + c;  // you can also try this version
+        hash = 101 * hash + *s++;
         hash = hash ^ (hash >> 16);
     }
     return hash % N;
@@ -35,11 +33,11 @@ bool check(const char *word)
 
     for (char *p = lookup_wrd; *p; p++)
         if (*p >= 'A' && *p <= 'Z')
-                *p = tolower(*p);
+            *p = tolower(*p);
 
     int i = hash(lookup_wrd), j = 0;
 
-    while (table[i][j][0] != '\0')
+    while (table[i][j][0] != 0)
     {
         if (strcmp(table[i][j++], lookup_wrd) == 0)
         {
@@ -52,13 +50,6 @@ bool check(const char *word)
 
 bool load(const char *dictionary)
 {
-    for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < M; j++)
-        {
-            table[i][j][0] = '\0';
-        }
-    }
 
     FILE *dic = fopen(dictionary, "r");
     if (dic == NULL)
@@ -74,7 +65,7 @@ bool load(const char *dictionary)
         i = hash(buffer);
         j = 0;
 
-        while (table[i][j][0] != '\0')
+        while (table[i][j][0] != 0)
         {
             j++;
         }

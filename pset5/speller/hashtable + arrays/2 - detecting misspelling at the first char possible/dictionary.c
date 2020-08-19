@@ -6,7 +6,7 @@
 #include <ctype.h>   //this is needed for tolower
 #include <stdio.h>   // this is needed for NULL, FILE datatype, fopen, fclose, fscanf
 #include <strings.h> //this is needed for strcasecmp
-#define N 25000
+#define N 250000
 #define M 10
 
 char table[N][M][45];
@@ -36,14 +36,19 @@ bool check(const char *word)
     for (char *p = lookup_wrd; *p; p++)
         *p = tolower(*p);
 
-    int i = hash(lookup_wrd), j = 0;
+    int i = hash(lookup_wrd), j = 0, k = 0;
 
-    while (table[i][j][0] != '\0')
+    while (table[i][j][k] != '\0')
     {
-        if (strcmp(table[i][j++], lookup_wrd) == 0)
+        while (table[i][j][k] == (lookup_wrd[k] >= 'A' && lookup_wrd[k] <= 'Z' ?: lookup_wrd[k]))
         {
-            return true;
+            k++;
+
+            if (table[i][j][k] == '\0')
+                return true;
         }
+
+        j++;
     }
 
     return false;

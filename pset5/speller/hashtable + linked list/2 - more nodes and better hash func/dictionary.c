@@ -38,16 +38,12 @@ unsigned int hash(const char *s)
 
 bool check(const char *word)
 {
-    int len = strlen(word);
-    char lookup_wrd[len + 1];
+    char lookup_wrd[LENGTH + 1];
 
-    // lower case word
-    for (int i = 0; i < len; i++)
-    {
-        lookup_wrd[i] = tolower(word[i]);
-    }
+    strcpy(lookup_wrd, word);
 
-    lookup_wrd[len] = '\0';
+    for (char *p = lookup_wrd; *p; p++)
+        *p = tolower(*p);
 
     node *node_ptr = table[hash(lookup_wrd)];
 

@@ -20,17 +20,17 @@ bool check(const char *word)
 {
 
     char lw[LENGTH + 1];
-    char *p;
     strcpy(lw, word);
+    char *p;
 
     for (p = lw; *p; p++)
         if (*p > 64 && *p < 91)
-            *p = *p + 32;
+            *p += 32;
 
     int i = hash(lw), j = 0;
 
-    while (t[i][j][0] != 0)
-        if (strcmp(t[i][j++], lw) == 0)
+    while (t[i][j][0])
+        if (!strcmp(t[i][j++], lw))
             return true;
 
     return false;
@@ -38,9 +38,8 @@ bool check(const char *word)
 
 bool load(const char *dictionary)
 {
-
     FILE *dc = fopen(dictionary, "r");
-    if (dc == NULL)
+    if (!dc)
         return false;
 
     char bf[LENGTH];

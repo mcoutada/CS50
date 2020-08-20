@@ -4,17 +4,15 @@
 #define N 85000
 #define M 3
 
-char t[N][M][45];
-
+char t[N][M][LENGTH];
 unsigned int cn = 0;
 
 unsigned int hash(const char *s)
 {
     unsigned long h = 0;
     while (*s)
-    {
         h = 101 * h + *s++;
-    }
+
     return (h ^ (h >> 16)) % N;
 }
 
@@ -32,10 +30,8 @@ bool check(const char *word)
     int i = hash(lw), j = 0;
 
     while (t[i][j][0] != 0)
-    {
         if (strcmp(t[i][j++], lw) == 0)
             return true;
-    }
 
     return false;
 }
@@ -47,7 +43,7 @@ bool load(const char *dictionary)
     if (dc == NULL)
         return false;
 
-    char bf[LENGTH + 1];
+    char bf[LENGTH];
     int i, j;
 
     while (fscanf(dc, "%s", bf) != EOF)

@@ -1,15 +1,12 @@
 // Implements a dictionary's functionality
 
-#include <stdbool.h>
 #include "dictionary.h"
-#include <string.h>  //this is needed for strncpy
-#include <ctype.h>   //this is needed for tolower
-#include <stdio.h>   // this is needed for NULL, FILE datatype, fopen, fclose, fscanf
-#include <strings.h> //this is needed for strcasecmp
-#define N 143091
-#define M 10
+#include <string.h> // this is needed for strcpy strcmp
+#include <stdio.h>  // this is needed for NULL FILE datatype, fopen, fclose, fscanf
+#define N 85000
+#define M 3
 
-char table[N][M][45]; // as this is declared at file scpe, all array elements are initialized to 0
+char table[N][M][45]; // as this is declared at global scope, all array elements are initialized to 0
 
 unsigned int dic_wrds_cnt = 0;
 
@@ -28,12 +25,12 @@ bool check(const char *word)
 {
 
     char lookup_wrd[LENGTH + 1];
-
+    char *p;
     strcpy(lookup_wrd, word);
 
-    for (char *p = lookup_wrd; *p; p++)
-        if (*p >= 'A' && *p <= 'Z')
-            *p = tolower(*p);
+    for (p = lookup_wrd; *p; p++)
+        if (*p > 64 && *p < 91)
+            *p = *p + 32;
 
     int i = hash(lookup_wrd), j = 0;
 
@@ -65,10 +62,11 @@ bool load(const char *dictionary)
         i = hash(buffer);
         j = 0;
 
-        while (table[i][j][0] != 0)
+        while (table[i][j][0])
         {
             j++;
-        }
+        };
+
         strcpy(table[i][j], buffer);
         dic_wrds_cnt++;
     }

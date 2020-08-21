@@ -40,15 +40,13 @@ bool load(const char *dictionary)
 #include <sys/mman.h> // this is needed for mmap
 #include <fcntl.h>    // this is needed for O_RDONLY
 #include <sys/stat.h> // this is needed for the stat datatype
-                      // #include <sys/types.h> // this was theorically needd but it works without it
+// #include <sys/types.h> // this was theorically needd but it works without it
 
     struct stat ldc;
-    int status;
-
     stat(dictionary, &ldc);
-    int dc = open(dictionary, O_RDONLY);
     // long ldc = 1439228;
 
+    int dc = open(dictionary, O_RDONLY);
     char *fb = mmap(0, ldc.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, dc, 0);
     char *sb = strtok(fb, "\n");
     int i, j;

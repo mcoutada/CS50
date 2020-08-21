@@ -17,7 +17,7 @@ typedef struct node
 /* english has 230k words approx, it's better to have a 6 digits hash to diminish the size of a node's linked list
    from what I read hash functions improve if you use the biggest prime number possible, for 6 digits is 999983
 */
-#define N 999983
+#define N 85000
 
 node *table[N];
 
@@ -31,9 +31,8 @@ unsigned int hash(const char *s)
     while (*s)
     {
         hash = (((hash << 5) + hash) ^ *s++); //  hash = hash * 33 + c;  // you can also try this version
-        hash = hash ^ (hash >> 16);
     }
-    return hash % N;
+    return (hash ^ (hash >> 16)) % N;
 }
 
 bool check(const char *word)

@@ -1,7 +1,7 @@
 #include "dictionary.h"
 #include <string.h>
 #include <stdio.h>
-#define N 70000
+#define N 70001
 #define M 3
 
 char t[N][M][LENGTH];
@@ -9,11 +9,11 @@ unsigned int cn = 0;
 
 unsigned int hash(const char *s)
 {
-    unsigned long h = 0;
+    unsigned long h = 5381;
     while (*s)
-        h = 101 * h + *s++;
+        h = 33 * h + *s++;
 
-    return (h ^ (h >> 16)) % N;
+    return h % N;
 }
 
 bool check(const char *word)
@@ -21,17 +21,26 @@ bool check(const char *word)
 
     char lw[LENGTH + 1];
     strcpy(lw, word);
-    char *p;
 
-    for (p = lw; *p; p++)
+    for (char *p = lw; *p; p++)
         if (*p > 64 && *p < 91)
             *p += 32;
 
     int i = hash(lw), j = 0;
 
     while (t[i][j][0])
-        if (!strcmp(t[i][j++], lw))
+    {
+        if (!strcmp(t[i][j], lw))
+        {
+            if (j != 0)
+            {
+                strcpy(t[i][j], t[i][0]);
+                strcpy(t[i][0], lw);
+            }
             return true;
+        }
+        j++;
+    }
 
     return false;
 }

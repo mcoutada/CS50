@@ -6,29 +6,27 @@
 #define N 85000
 #define M 3
 
-char table[N][M][45]; // as this is declared at global scope, all array elements are initialized to 0
+char table[N][M][LENGTH]; // as this is declared at global scope, all array elements are initialized to 0
 
 unsigned int dic_wrds_cnt = 0;
 
 unsigned int hash(const char *s)
 {
-    unsigned long hash = 0;
+    unsigned long hash = 5381;
     while (*s)
     {
-        hash = 101 * hash + *s++;
-        hash = hash ^ (hash >> 16);
+        hash = 33 * hash + *s++;
     }
-    return hash % N;
+    return (hash ^ (hash >> 16)) % N;
 }
 
 bool check(const char *word)
 {
 
     char lookup_wrd[LENGTH + 1];
-    char *p;
     strcpy(lookup_wrd, word);
 
-    for (p = lookup_wrd; *p; p++)
+    for (char *p = lookup_wrd; *p; p++)
         if (*p > 64 && *p < 91)
             *p = *p + 32;
 

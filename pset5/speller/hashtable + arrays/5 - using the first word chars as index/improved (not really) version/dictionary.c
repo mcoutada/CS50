@@ -1,10 +1,11 @@
 #include "dictionary.h"
 #include <string.h>
 #include <stdio.h>
-#define N 70001
-#define M 3
+#define N 5
+#define M 2
+#define A 123
 
-char t[N][M][LENGTH];
+char t[A][A][A][A][A][N][M][LENGTH];
 unsigned int cn = 0;
 
 unsigned int hash(const char *s)
@@ -26,12 +27,20 @@ bool check(const char *word)
     while (*p)
         *p++ |= 32;
 
-    int i = hash(lw), j = 0;
+    p = lw;
 
-    while (*t[i][j])
+    int a = *p ? *p++ : 0;
+    int b = *p ? *p++ : 0;
+    int c = *p ? *p++ : 0;
+    int d = *p ? *p++ : 0;
+    int e = *p ? *p++ : 0;
+    int y = *p ? hash(p) : 0;
+    int z = 0;
+
+    while (*t[a][b][c][d][e][y][z])
     {
         p = lw;
-        q = t[i][j++];
+        q = t[a][b][c][d][e][y][z++];
 
         while (!(*p++ ^ *q++))
             if (*q == 0 && *p == 0)
@@ -55,17 +64,24 @@ bool load(const char *dictionary)
     int dc = open(dictionary, O_RDONLY);
     char *fb = mmap(0, ldc.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, dc, 0);
     char *sb = strtok(fb, "\n");
-    int i, j;
+    char *sbs;
+    int a, b, c, d, e, y, z;
 
     do
     {
-        i = hash(sb);
-        j = 0;
+        sbs = sb;
+        a = *sbs ? *sbs++ : 0;
+        b = *sbs ? *sbs++ : 0;
+        c = *sbs ? *sbs++ : 0;
+        d = *sbs ? *sbs++ : 0;
+        e = *sbs ? *sbs++ : 0;
+        y = *sbs ? hash(sbs) : 0;
+        z = 0;
         cn++;
-        while (*t[i][j])
-            j++;
+        while (*t[a][b][c][d][e][y][z])
+            z++;
 
-        strcpy(t[i][j], sb);
+        strcpy(t[a][b][c][d][e][y][z], sb);
     } while ((sb = strtok(NULL, "\n")));
     return true;
 }

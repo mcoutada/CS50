@@ -4,7 +4,7 @@
 #define N 70001
 #define M 3
 
-char t[N][M][LENGTH];
+char *t[N][M];
 unsigned int cn = 0;
 
 unsigned int hash(const char *s)
@@ -18,6 +18,7 @@ unsigned int hash(const char *s)
 
 bool check(const char *word)
 {
+
     char lw[LENGTH];
     strcpy(lw, word);
 
@@ -28,7 +29,7 @@ bool check(const char *word)
 
     int i = hash(lw), j = 0;
 
-    while (*t[i][j])
+    while (t[i][j])
     {
         p = lw;
         q = t[i][j++];
@@ -46,7 +47,6 @@ bool load(const char *dictionary)
 #include <sys/mman.h> // this is needed for mmap
 #include <fcntl.h>    // this is needed for O_RDONLY
 #include <sys/stat.h> // this is needed for the stat datatype
-                      // #include <sys/types.h> // this was theorically needd but it works without it
 
     struct stat ldc;
     stat(dictionary, &ldc);
@@ -62,10 +62,10 @@ bool load(const char *dictionary)
         i = hash(sb);
         j = 0;
         cn++;
-        while (*t[i][j])
+        while (t[i][j])
             j++;
 
-        strcpy(t[i][j], sb);
+        t[i][j] = sb;
     } while ((sb = strtok(NULL, "\n")));
     return true;
 }

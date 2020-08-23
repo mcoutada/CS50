@@ -1,8 +1,8 @@
 #include "dictionary.h"
 #include <string.h>
 #include <stdio.h>
-#define N 65536
-#define M 3
+#define N ((unsigned int)65536)
+#define M ((unsigned int)3)
 
 char t[N][M][LENGTH];
 unsigned int cn = 0;
@@ -27,7 +27,7 @@ bool check(const char *word)
     {
         *p++ |= 32;
     }
-    int i = hash(lw), j = 0;
+    unsigned int i = hash(lw), j = 0;
 
     while (*t[i][j])
     {
@@ -60,10 +60,10 @@ bool load(const char *dictionary)
     struct stat ldc;
     stat(dictionary, &ldc);
 
-    int dc = open(dictionary, O_RDONLY);
+    unsigned int dc = open(dictionary, O_RDONLY);
     char *fb = mmap(0, ldc.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, dc, 0);
     char *sb = strtok(fb, "\n");
-    int i, j;
+    unsigned int i, j;
 
     do
     {

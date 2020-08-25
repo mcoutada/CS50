@@ -3,10 +3,8 @@
 #define N ((unsigned int)65536)
 #define M ((unsigned int)3)
 
-static char *t[N][M];
+char *t[N][M];
 unsigned int cn = 0;
-
-#include <stdint.h>
 
 unsigned int hash(const char *s)
 {

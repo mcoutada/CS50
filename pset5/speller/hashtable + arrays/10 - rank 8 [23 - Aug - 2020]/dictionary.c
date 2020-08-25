@@ -24,7 +24,7 @@ bool check(const char *word)
     while (*p)
     {
         // *p |= 32;
-        *p = !(*p & 0x20) ? *p | 32 : *p;
+        *p = !(*p & 32) ? *p | 32 : *p;
         h = 33 * h + *p++;
     }
 

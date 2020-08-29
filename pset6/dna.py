@@ -17,12 +17,11 @@ def main():
         return
 
     # read the first (and only) line from the dna sequence from the file
-    with open(argv[2]) as dnafile:
+    with open(argv[2], "r") as dnafile:
         nnDnaChain = dnafile.readline()
 
-    # extract the DNA Short Tandem Repeats (STRs) from the first line (fieldnames) of the csv
-    # strKeys = ['AGATC', 'TTTTTTCT', 'AATG', 'TCTAG', 'GATA', 'TATC', 'GAAA', 'TCTG']
-    with open(argv[1]) as csvFile:
+    # extract the DNA Short Tandem Repeats (STRs) from the first line (fieldnames) of the csv. Exclude names (1st)
+    with open(argv[1], "r") as csvFile:
         dnaDB = DictReader(csvFile)
         strKeys = dnaDB.fieldnames[1:]
 
@@ -36,7 +35,7 @@ def main():
             nnRec[strKey] = str(maxStrRep.count(strKey))
 
     # iterate all people records to find who matches the nnRec
-    with open(argv[1], newline='') as csvFile:
+    with open(argv[1], "r") as csvFile:
         dnaDB = DictReader(csvFile)
         for pplRec in dnaDB:
             if nnRec == {key: val for key, val in pplRec.items() if key != 'name'}:

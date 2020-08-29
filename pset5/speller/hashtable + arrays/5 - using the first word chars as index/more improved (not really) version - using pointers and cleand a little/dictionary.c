@@ -3,7 +3,7 @@
 #include <stdio.h>
 #define A 123
 #define N ((unsigned int)4)
-#define M ((unsigned int)1)
+#define M ((unsigned int)2)
 
 char *t[A][A][A][A][A][N][M];
 unsigned int cn = 0;

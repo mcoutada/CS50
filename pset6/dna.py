@@ -1,23 +1,24 @@
 
 """
 DNA
+Running:                                                          Retrieves:
+python ~/pset6/dna/dna.py databases/large.csv sequences/5.txt     Lavender 
 """
 from csv import DictReader
 from sys import argv
 from re import findall
 
-# The arguments are:   sys.argv       ex: ['dna.py', 'databases/large.csv', 'sequences/1.txt']
-# Number of arguments: len(sys.argv)  ex: 3
-# Name of the script:  sys.argv[0]    ex: 'dna.py'
-# CSV names file:      sys.argv[1]    ex: 'databases/large.csv'
-# DNA chain TXT fie:   sys.argv[2]    ex: 'sequences/1.txt'
-
 
 def main():
 
+    # argv is an arguments list. Example: argv[0]='dna.py', sys.argv[1]='databases/large.csv' sys.argv[2] = 'sequences/1.txt'
     if len(argv) != 3:
         print("Usage: python dna.py data.csv sequence.txt")
         return
+
+    # read the first (and only) line from the dna sequence from the file
+    with open(argv[2]) as dnafile:
+        nnDnaChain = dnafile.readline()
 
     # extract the DNA Short Tandem Repeats (STRs) from the first line (fieldnames) of the csv
     # strKeys = ['AGATC', 'TTTTTTCT', 'AATG', 'TCTAG', 'GATA', 'TATC', 'GAAA', 'TCTG']
@@ -25,25 +26,21 @@ def main():
         dnaDB = DictReader(csvFile)
         strKeys = dnaDB.fieldnames[1:]
 
-    # read the first (and only) line from the dna sequence from the file
-    with open(argv[2]) as dnafile:
-        nnDnaChain = dnafile.readline()
-
-    # create a dictionary with the strKey as key and the max amount of contiguous appearances of that strKey as value
-    dnaAttr = {}
+    # create a dictionary with the strKey as key and its max amount of contiguous appearances as value
+    nnRec = {}
     for strKey in strKeys:
         if strKey in nnDnaChain:
             strReps = findall(r"(?:{})+".format(strKey), nnDnaChain)
             maxStrRep = max(strReps, key=len)
-            # they are converted to string for to match the csv
-            dnaAttr[strKey] = str(maxStrRep.count(strKey))
+            # they are converted to string to match the csv
+            nnRec[strKey] = str(maxStrRep.count(strKey))
 
-    # iterate all persons to find who matches the dnaAttr
+    # iterate all people records to find who matches the nnRec
     with open(argv[1], newline='') as csvFile:
         dnaDB = DictReader(csvFile)
-        for personAttr in dnaDB:
-            if {k: v for k, v in personAttr.items() if k != 'name'} == dnaAttr:
-                print(personAttr['name'])
+        for pplRec in dnaDB:
+            if nnRec == {key: val for key, val in pplRec.items() if key != 'name'}:
+                print(pplRec['name'])
                 return
         print("No match")
         return

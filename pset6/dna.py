@@ -1,8 +1,8 @@
 
 """
 DNA
-Running:                                                          Retrieves:
-python ~/pset6/dna/dna.py databases/large.csv sequences/5.txt     Lavender 
+Running:                                                             Retrieves:
+python ~/pset6/dna/dna.py databases/large.csv sequences/5.txt        Lavender 
 """
 from csv import DictReader
 from sys import argv
@@ -11,7 +11,7 @@ from re import findall
 
 def main():
 
-    # argv is an arguments list. Example: argv[0]='dna.py', sys.argv[1]='databases/large.csv' sys.argv[2] = 'sequences/1.txt'
+    # argv is an arguments list. Example: argv[0]='dna.py', sys.argv[1]='databases/large.csv' sys.argv[2] = 'sequences/5.txt'
     if len(argv) != 3:
         print("Usage: python dna.py data.csv sequence.txt")
         return
@@ -32,7 +32,7 @@ def main():
         if strKey in nnDnaChain:
             strReps = findall(r"(?:{})+".format(strKey), nnDnaChain)
             maxStrRep = max(strReps, key=len)
-            # they are converted to string to match the csv
+            # count the appearances and set its number to string to match the csv
             nnRec[strKey] = str(maxStrRep.count(strKey))
 
     # iterate all people records to find who matches the nnRec

@@ -22,7 +22,7 @@ unsigned long djb2(const char *s)
         hash = hash * 33 + c;
     }
     // this line below make your hash a little slower but you will have less collisions
-    // I didn't needed it, but confirmed it improves this and any hash function, below an explanation
+    // I didn't needed it, but confirmed it improves this, and any hash function, below an explanation
     // hash = hash ^ (hash >> 16);
     return hash;
 }
@@ -33,7 +33,7 @@ unsigned long djb2(const char *s)
 // return hash ^ (hash >> 16);
 
 // a simple way to test how many collisions you are having, is to use the counter from the SIZE function,
-// just count every time a node is created and it's not the first one for that hash
+// just count every time a node is created and it's not part of the root (first one for that hash)
 // you will see the amount of collisions as the "WORDS IN DICTIONARY: "
 
 //**********************************************************************************//

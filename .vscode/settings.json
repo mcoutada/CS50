@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "C:\\Users\\asd\\Desktop\\CS50\\w7\\movies\\movies.db",
+            "driver": "SQLite",
+            "name": "movies",
+            "previewLimit": 50
+        }
+    ]
+}

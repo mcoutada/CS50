@@ -6,5 +6,6 @@
             "name": "movies",
             "previewLimit": 50
         }
-    ]
+    ],
+    "sqltools.useNodeRuntime": true
 }

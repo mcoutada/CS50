@@ -15,7 +15,7 @@ SELECT birth
 ORDER BY title;
 
 --4-----------------------------
-SELECT count(*)
+SELECT COUNT(*)
   FROM ratings
  WHERE rating = 10;
 
@@ -27,7 +27,7 @@ SELECT count(*)
 ORDER BY year;
 
 --6-----------------------------
- SELECT avg(rating)
+ SELECT AVG(rating)
    FROM ratings
   WHERE movie_id IN (
                       SELECT id
@@ -36,7 +36,7 @@ ORDER BY year;
                     );
 
 --other way
- SELECT avg(r.rating)
+ SELECT AVG(r.rating)
    FROM ratings r
       , movies m
   WHERE r.movie_id = m.id
@@ -57,8 +57,8 @@ SELECT p.name
   FROM movies m
      , people p
      , stars s
- WHERE m.id = s.movie_id
-   AND p.id = s.person_id
+ WHERE s.person_id = p.id
+   AND s.movie_id = m.id
    AND m.title = 'Toy Story';
 
 --9-----------------------------
@@ -66,19 +66,19 @@ SELECT p.name
     FROM movies m
        , people p
        , stars s
-   WHERE m.id = s.movie_id
-     AND p.id = s.person_id
+   WHERE s.movie_id = m.id
+     AND s.person_id = p.id
      AND m.year = 2004
 ORDER BY p.birth;
 
 --10-----------------------------
-SELECT DISTINCT name
+SELECT DISTINCT p.name
   FROM people p
      , directors d
      , ratings r
- WHERE r.movie_id = d.movie_id
-   AND p.id = d.person_id
-   and r.rating >=9;
+ WHERE d.movie_id = r.movie_id
+   AND d.person_id = p.id
+   and r.rating >= 9;
 
 --11-----------------------------
   SELECT m.title
@@ -86,7 +86,7 @@ SELECT DISTINCT name
        , movies m
        , ratings r
        , stars s
-   WHERE r.movie_id = m.id
+   WHERE m.id = r.movie_id
      AND m.id = s.movie_id
      AND s.person_id = p.id
      AND p.name = 'Chadwick Boseman'

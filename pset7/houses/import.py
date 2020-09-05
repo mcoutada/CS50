@@ -4,7 +4,7 @@ HOUSES: import.py
 Usage:
     python import.py characters.csv
 
-Check insertion:
+Check insertion through command line:
 cd ~/pset7/houses
 sqlite3
 .header on
@@ -20,7 +20,7 @@ from sqlite3 import connect
 
 def main():
 
-    # argv is an arguments list. Example: argv[0] = 'import.py', sys.argv[1] = 'characters.csv'
+    # argv is an arguments list where argv[0] = 'import.py' and sys.argv[1] = 'characters.csv'
     if len(argv) != 2:
         print("Usage: python import.py characters.csv")
         return

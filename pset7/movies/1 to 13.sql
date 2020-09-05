@@ -125,16 +125,33 @@ SELECT title
              );
 
 --other way
-WITH t0 AS (
-             SELECT p.name
-                  , m.title
-                  , m.id
-               FROM people p
-                  , movies m
-                  , stars s
-              WHERE m.id = s.movie_id
-                AND s.person_id = p.id
-                AND p.name IN ('Johnny Depp', 'Helena Bonham Carter')
+SELECT title
+  FROM movies
+ WHERE id IN (SELECT movie_id
+                FROM stars
+               WHERE person_id = (SELECT id
+                                    FROM people
+                                   WHERE name = 'Johnny Depp'
+                                 )
+                 AND movie_id IN SELECT movie_id
+                                   FROM stars
+                                  WHERE person_id = (SELECT id
+                                                       FROM people
+                                                      WHERE name = 'Helena Bonham Carter'
+                                                    )
+             );
+
+
+--other way
+WITH t0 AS (SELECT p.name
+                 , m.title
+                 , m.id
+              FROM people p
+                 , movies m
+                 , stars s
+             WHERE m.id = s.movie_id
+               AND s.person_id = p.id
+               AND p.name IN ('Johnny Depp', 'Helena Bonham Carter')
            )
       SELECT t1.title
         FROM t0 AS t1
@@ -188,26 +205,26 @@ SELECT name
              );
 
 --other way
-   WITH t1 AS (SELECT id
-                 FROM people
-                WHERE name = 'Kevin Bacon'
-                  AND birth = 1958
-              )
-      , t2 AS (SELECT s.movie_id
-                 FROM stars s
-                    , t1
-                WHERE s.person_id = t1.id
-              )
-      , t3 AS (SELECT s.person_id
-                 FROM stars s
-                    , t2
-                WHERE s.movie_id = t2.movie_id
-              )
-SELECT DISTINCT p.name
-  FROM people p
-     , t3
- WHERE p.name != 'Kevin Bacon'
-   AND p.id = t3.person_id;
+WITH t1 AS (SELECT id
+              FROM people
+             WHERE name = 'Kevin Bacon'
+               AND birth = 1958
+           )
+   , t2 AS (SELECT s.movie_id
+              FROM stars s
+                 , t1
+             WHERE s.person_id = t1.id
+           )
+   , t3 AS (SELECT s.person_id
+              FROM stars s
+                 , t2
+             WHERE s.movie_id = t2.movie_id
+           )
+      SELECT DISTINCT p.name
+        FROM people p
+           , t3
+       WHERE p.name != 'Kevin Bacon'
+         AND p.id = t3.person_id;
 
 --other way
 WITH t0 AS (SELECT p.name

@@ -308,6 +308,7 @@ void lock_pairs(void)
 {
 
     // It's probably useful to read some graph theory first, and becoming familiar with terms like "adjacency matrix" "Depth First Search" "transverse". And also see "How to Detect Cycle in Directed Graph"
+    // There are some 5 to 10 mins Youtube videos about it, that I also recommend to take a look.
     // There's some theory behind this function that we didn't see yet in the course.
     // Grabbing pen an paper to draw the examples I gonna explain, it will make your life much easier
 
@@ -426,7 +427,7 @@ void lock_pairs(void)
         locked[pairs[i].winner][pairs[i].loser] = !closesloop(pairs[i].winner, pairs[i].loser);
     }
 }
-// the basic implementation of the closesloop algorithm we explained above is:
+// the basic implementation of the closesloop algorithm I explained above is:
 //
 // bool closesloop(int a, int b)
 // {
@@ -451,66 +452,70 @@ void lock_pairs(void)
 
 // closesloop: improving the algorithm
 // Now that we understand it, let's improve a little this algorithm.
-// Why are we going to hook up good guys behind a-->b if maybe nothing fits in front? We need to be able to connect both extremes in order to have a cycle
+// Why are we going to hook up lots of good guys behind a-->b if maybe nothing fits in front? We need to be able to connect both extremes in order to have a cycle
 // Let's apply the "good guys logic" to both extremes of a-->b
 
 // bool closesloop(int a, int b)
 // {
-//     // base case
+//     // base case: if either a-->a (a == b) or a-->b-->a (locked[b][a] ==true) exist, return true
 //     if (locked[b][a] || a == b)
 //     {
-//         // either a-->a or a-->b-->a exist
 //         return true;
 //     }
-//
+// 
+//     // if the base case is not true, let's loop the locked array, from i=0 to candidate_count, to see if we find b-->i
 //     for (int i = 0; i < candidate_count; i++)
 //     {
-//         // find b-->i (a way to depart from a-->b == a-->b-->i)
+//         // if we find b-->i (locked[b][i] == true, a way to depart from a-->b == a-->b-->i)
 //         if (locked[b][i])
 //         {
+//             // we loop the locked array again, from j=0 to candidate_count, to find j-->a
 //             for (int j = 0; j < candidate_count; j++)
 //             {
-//                 // find j-->a (a way to reach to a-->b == j-->a-->b)
+//                 // if we find j-->a (locked[j][a] == true, a way to reach to a-->b == j-->a-->b)
 //                 if (locked[j][a])
 //                 {
 //                     // b-->i and j-->a are locked, we now have j-->a-->b-->i, we need to check if i-->j is locked (which generates the cycle j-->a-->b-->i-->j)
 //                     // so we call closesloop(j, i) in order for it's base case to ask if i-->j is locked
+//                     // notice that i and j might be the same (i == j, means j-->a-->b-->j, that is why we need (a == b) in the base case
 //                     return closesloop(j, i);
 //                 }
 //             }
-//             return false; // if there's no j-->a to reach a-->b from behind, there's no cycle
+//             return false; // if there's no j-->a to reach a-->b from behind, there's no cycle, return false
 //         }
 //     }
-//     return false; // if there's no b-->i to depart from a-->b, there's no cycle
+//     return false; // if there's no b-->i to depart from a-->b, there's no cycle, return false
 // }
 
 // closesloop: second improvement
 // if we find b-->i, let's ask if i-->b is locked, if so, there's no point of looking for j-->a as we already have a 3 nodes cycle i-->a-->b-->i
-// in fact, we will find j-->a, and it will be == b-->i, so let's change an array scan for just one operation
+// in fact, we do will find j-->a, and it will be == b-->i, so let's change an array scan for just one operation
 // but if we found b-->i (and we know already i-->b is not locked), then we look for j-->a, so now have j-->a-->b-->i, the next possibility is a 4 nodes cycle, so we ask recursively if if i-->j exists
 
 bool closesloop(int a, int b)
 {
-    // base case 1 (2 nodes cycle) a-->b-->a exists
+    // base case 1: if a-->b-->a exists (2 nodes cycle, locked[b][a] == true) return true
     if (locked[b][a])
     {
         return true;
     }
 
+    //if not, we loop the locked array, from i=0 to candidate_count, to see if we find b-->i
     for (int i = 0; i < candidate_count; i++)
     {
-        // find b-->i (a-->b-->i)
+        // if we find b-->i (locked[b][i] == true), we now have a-->b-->i
         if (locked[b][i])
         {
-            // base case 2 (3 nodes cycle) i-->a-->b-->i exists
+            // base case 2: if i-->a is locked, then we have i-->a-->b-->i (3 nodes cycle), return true
             if (locked[i][a])
             {
                 return true;
             }
 
+            // but if i-->a is not locked, let's loop the locked array again, from j=0 to candidate_count, to see if we find j-->a
             for (int j = 0; j < candidate_count; j++)
             {
-                // find j-->a (a way to reach to a-->b == j-->a-->b)
+                // if we find j-->a (locked[j][a] == true, we now have j-->a-->b-->i)
                 if (locked[j][a])
                 {
                     // b-->i and j-->a are locked, we now have j-->a-->b-->i , we need to check if i-->j is locked (which generates the 4 nodes cycle j-->a-->b-->i-->j)
@@ -518,10 +523,10 @@ bool closesloop(int a, int b)
                     return closesloop(j, i);
                 }
             }
-            return false; // if there's no j-->a to reach a-->b from behind, there's no cycle
+            return false; // if there's no j-->a to reach a-->b from behind, there's no cycle, return false
         }
     }
-    return false; // if there's no b-->i to depart from a-->b, there's no cycle
+    return false; // if there's no b-->i to depart from a-->b, there's no cycle, return false
 }
 
 // Print the winner of the election

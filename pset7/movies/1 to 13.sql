@@ -141,7 +141,6 @@ SELECT title
                                                     )
              );
 
-
 --other way
 WITH t0 AS (SELECT p.name
                  , m.title
@@ -159,6 +158,17 @@ WITH t0 AS (SELECT p.name
        WHERE t1.id = t2.id
          AND t1.name = 'Johnny Depp'
          AND t2.name = 'Helena Bonham Carter';
+
+--other way: Deepa's approach
+  SELECT m.title
+    FROM movies m
+       , stars s
+       , people p
+   WHERE m.id = s.movie_id
+     AND s.person_id = p.id 
+     AND p.name IN ('Johnny Depp', 'Helena Bonham Carter')
+GROUP BY s.movie_id
+  HAVING COUNT(*) = 2;
 
 --13-----------------------------
 SELECT DISTINCT p1.name

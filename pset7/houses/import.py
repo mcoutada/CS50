@@ -36,9 +36,12 @@ def main():
             housesDB = DictReader(csvFile)
 
             for row in housesDB:
+                house = row["house"]
+                born = row["birth"]
                 name = row["name"].split()
-                middleName = "".join(name[1:-1])
-                middleName = "NULL" if middleName is None else "'" + middleName  + "'"
+                firstName = name[0]
+                middleName = "NULL" if name[1] == name[-1] else "'" + name[1]  + "'"
+                lastName = name[-1]
 
                 # Triple quotes (both varieties, """ and ''' are permitted) allow the string to contain line breaks
                 sql = f"""INSERT INTO students ( first
@@ -47,11 +50,11 @@ def main():
                                                , house
                                                , birth
                                                )
-                                        VALUES ( '{name[0]}'
+                                        VALUES ( '{firstName}'
                                                ,  {middleName}
-                                               , '{name[-1]}'
-                                               , '{row["house"]}'
-                                               ,  {row["birth"]}
+                                               , '{lastName}'
+                                               , '{house}'
+                                               ,  {born}
                                                );
                        """
                 conn.cursor().execute(sql)

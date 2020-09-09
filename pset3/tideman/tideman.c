@@ -144,11 +144,9 @@ void record_preferences(int ranks[])
     // 3rd place: [ranks[2], ranks[3]]
     //
     // We can see that:
-    // In 1st place: [ranks[w], ranks[l]] iterations are w = 0 and l = 1, 2, 3
-    // In 2nd place: [ranks[w], ranks[l]] iterations are w = 1 and l = 2, 3
-    // In 3rd place: [ranks[w], ranks[l]] iterations are w = 2 and l = 3
-    //
-    // (w stands for winner, l for looser)
+    // In 1st place: [ranks[W], ranks[L]] iterations are W = 0 and L = 1, 2, 3
+    // In 2nd place: [ranks[W], ranks[L]] iterations are W = 1 and L = 2, 3
+    // In 3rd place: [ranks[W], ranks[L]] iterations are W = 2 and L = 3
     //
     // this means  (0 <= W <= 2) hence (0 <= W < 3) hence (0 <= W < candidate_count - 1)
     //             (1 <= L <= 3) hence (1 <= L < 4) hence  (1 <= L < candidate_count)

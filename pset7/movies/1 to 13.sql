@@ -178,7 +178,7 @@ SELECT DISTINCT p1.name
  WHERE s1.movie_id = s2.movie_id
    AND s1.person_id = p1.id
    AND s2.person_id = p2.id
-   AND p1.name != 'Kevin Bacon'
+   AND p1.name != p2.name
    AND p2.name = 'Kevin Bacon'
    AND p2.birth = 1958;
  

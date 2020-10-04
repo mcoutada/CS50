@@ -19,10 +19,10 @@ unsigned long djb2(const char *s)
     unsigned long hash = 5381;
     while (*s)
     {
-        hash = hash * 33 + c;
+        hash = hash * 33 + *s++;
     }
     // this line below make your hash a little slower but you will have less collisions
-    // I didn't needed it, but confirmed it improves this, and any hash function, below an explanation
+    // I didn't needed it, but confirmed it improves this (and any hash function, below an explanation)
     // hash = hash ^ (hash >> 16);
     return hash;
 }

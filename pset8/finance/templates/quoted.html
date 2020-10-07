@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Name</th>
+                <th>Unit Price (usd)</th>
+                <th>Symbol</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ quoteIn['name'] }}</td>
+                <td>{{ quoteIn['price'] }}</td>
+                <td>{{ quoteIn['symbol'] }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

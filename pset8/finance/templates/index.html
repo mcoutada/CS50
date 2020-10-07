@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+    {% if rows %}
+        <table class="table table-bordered">
+            <caption class="h1" style="caption-side:top">Shares Portfolio</caption>
+            <thead class="thead-light">
+                <tr>
+                    <th>Stock</th>
+                    <th>Number of Shares</th>
+                    <th>Current Unit Price</th>
+                    <th>Current Value</th>
+                    <th>Value at Purchase</th>
+                    <th>Earnings</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.sumShares }}</td>
+                        <td>{{ row.currPrice | usd }}</td>
+                        <td>{{ row.totalCurr | usd }}</td>
+                        <td>{{ row.TotPurchVal | usd }}</td>
+                        <td>{{ row.diff | usd }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+<table class="table table-bordered" style='width: 0%; float: left; text-align: left;'>
+    <tr class="thead-light">
+        <th>Invested money so far:</th>
+        <td>{{ total.purch | usd if total.purch }}</td>
+    </tr>
+    <tr class="thead-light">
+        <th>Current Stock total:</th>
+        <td>{{ total.stock | usd if total.stock }}</td>
+    </tr>
+    <tr class="thead-light">
+        <th>Current Cash total:</th>
+        <td>{{ total.cash | usd if total.cash }}</td>
+    </tr>
+    <tr class="thead-light">
+        <th>Current Assets total:</th>
+        <td>{{ total.assets | usd if total.assets }}</td>
+    </tr>
+    <tr class="thead-light">
+        <th>Earnings total:</th>
+        <td>{{ total.earnings | usd if total.earnings }}</td>
+    </tr>
+</table>
+{% endblock %}

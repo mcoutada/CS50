@@ -1,0 +1,37 @@
+h1 {
+    font-size: 20px;
+}
+
+.tabla-principal {
+    border: 3px solid #bb3030;
+}
+
+.especial {
+    background-color: red;
+}
+
+.oculto {
+    display: none
+}
+
+.visible {
+    background-color: red;
+    display: block;
+}
+
+.navbar-principal {
+    font-size: 15px;
+}
+
+.table-principal {
+    margin-top: 10px;
+}
+
+.table-principal tr th,
+.table-principal tr td {
+    padding: .20rem;
+}
+
+.table-principal thead {
+    background-color: #f1c40f;
+}

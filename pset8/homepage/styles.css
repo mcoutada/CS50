@@ -1,0 +1,13 @@
+table td:nth-child(3) {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .proseguramarillo {
+    background-color: #f3ca26;
+    border-color: black;
+  }
+
+  .btn {
+    /* background-color: rgba(0,0,0,0.8); */
+  }

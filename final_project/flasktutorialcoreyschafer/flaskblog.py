@@ -1,36 +1,34 @@
-from flask import Flask, escape, request, render_template
+from flask import Flask, render_templat
 
 app = Flask(__name__)
+
+posts = [
+    {
+        'author': 'Corey Schafer',
+        'title': 'Blog Post 1',
+        'content': 'First post content',
+        'date_posted': 'April, 20, 2018'
+    },
+    {
+        'author': 'Jane Doe',
+        'title': 'Blog Post 2',
+        'content': 'First post content',
+        'date_posted': 'April, 21, 2018'
+    }
+]
 
 
 @app.route('/home')
 @app.route('/')
 def hello():
-    name = request.args.get("name", "World")
-    return "<h1>Home page</h1>"
+    return render_template("home.html", posts=posts)
+
 
 @app.route('/about')
 def about():
-    name = request.args.get("name", "World")
-    return "<h1>about page</h1>"
-
+    return render_template("about.html")
 
 
 # by adding these 2 lines I don't need to run "flask run", just call the script normally
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-# but if we don't want to use the 2 last above, we can trigger the script with "flask run"
-# REM on CMD:
-# cd "C:\Users\asd\Desktop\tests\CS50\final_project"
-# set FLASK_APP=flaskblog.py
-# set FLASK_DEBUG=1 # this is for being able to change the code without needing to restart the server
-# flask run
-#
-# # on Powershell:
-# cd "C:\Users\asd\Desktop\tests\CS50\final_project"
-# $env:FLASK_APP = "flaskblog.py"
-# $env:FLASK_ENV = "development"
-# flask run
-#

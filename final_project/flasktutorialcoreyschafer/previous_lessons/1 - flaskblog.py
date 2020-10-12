@@ -1,4 +1,5 @@
 from flask import Flask, escape, request
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -6,14 +7,30 @@ app = Flask(__name__)
 @app.route('/home')
 @app.route('/')
 def hello():
-    name = request.args.get("name", "World")
-    return "<h1>Home page</h1>"
+
+    # to test, visit http://127.0.0.1:5000/?name=jorge
+
+    # one way to do it:
+    # if 'name' in request.args:
+    #     name = request.args['name']
+    # else:
+    #     name = 'World'
+
+    # other way, the correct one
+    name1 = request.args.get("name", "World")
+    return """
+         <html><body>
+             <h1>Hello, {name3}!</h1>
+             The time is {thetime}.
+         </body></html>
+         """.format(
+        name3=name1, thetime=str(datetime.now()))
+
 
 @app.route('/about')
 def about():
     name = request.args.get("name", "World")
     return "<h1>about page</h1>"
-
 
 
 # by adding these 2 lines I don't need to run "flask run", just call the script normally

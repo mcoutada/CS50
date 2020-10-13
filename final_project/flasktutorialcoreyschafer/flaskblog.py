@@ -1,4 +1,4 @@
-from flask import Flask, render_templat
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -26,7 +26,7 @@ def hello():
 
 @app.route('/about')
 def about():
-    return render_template("about.html")
+    return render_template("about.html", title = 'About')
 
 
 # by adding these 2 lines I don't need to run "flask run", just call the script normally

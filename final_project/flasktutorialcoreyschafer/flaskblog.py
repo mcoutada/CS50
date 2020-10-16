@@ -1,48 +1,91 @@
-from flask import Flask, render_template, url_for
+from datetime import datetime
+from flask import Flask, render_template, url_for, flash, redirect
+from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "dcf8c557345a5b3481a481aaad5192d5"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+db = SQLAlchemy(app)
 
-app.config['SECRET_KEY'] = 'dcf8c557345a5b3481a481aaad5192d5'
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default="default.jpeg")
+    password = db.Column(db.String(60), unique=True, nullable=False)
+    posts = db.relationship("Post", backref="author", lazy=True)
+
+    def __repr__(self):
+        return f"User('{self.username}', '{self.username}','{self.image_file}')"
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.username}','{self.date_posted}')"
+
+# now with all the code above, we can create the db, to do it:
+# run in the console's project:
+#    python
+#    from flaskblog import db
+#    db.create_all() 
+# site.db should appear in the root project's folder
+
+
 posts = [
     {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April, 20, 2018'
+        "author": "Corey Schafer",
+        "title": "Blog Post 1",
+        "content": "First post content",
+        "date_posted": "April 20, 2018",
     },
     {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'First post content',
-        'date_posted': 'April, 21, 2018'
-    }
+        "author": "Jane Doe",
+        "title": "Blog Post 2",
+        "content": "Second post content",
+        "date_posted": "April 21, 2018",
+    },
 ]
 
 
-@app.route('/home')
-@app.route('/')
-def hello():
+@app.route("/")
+@app.route("/home")
+def home():
     return render_template("home.html", posts=posts)
 
 
-@app.route('/about')
+@app.route("/about")
 def about():
-    return render_template("about.html", title='About')
+    return render_template("about.html", title="About")
 
 
-@app.route('/register')
+@app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
-    return render_template("register.html", title='Register', form=form)
+    if form.validate_on_submit():
+        flash(f"Account created for {form.username.data}", "success")
+        return redirect(url_for("home"))
+    return render_template("register.html", title="Register", form=form)
 
 
-@app.route('/login')
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
-    return render_template("login.html", title='Login', form=form)
+    if form.validate_on_submit():
+        if form.email.data == "admin@blog.com" and form.password.data == "password":
+            flash(f"You have been logged in", "success")
+            return redirect(url_for("home"))
+        else:
+            flash("Login Unsuccessful. Please check username and password", "danger")
+    return render_template("login.html", title="Login", form=form)
 
 
 # by adding these 2 lines I don't need to run "flask run", just call the script normally
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

@@ -1,8 +1,11 @@
-from flaskblog import db
 from datetime import datetime
+from flaskblog import db, login_manager
+from flask_login import UserMixin
 
-
-class User(db.Model):
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -11,7 +14,7 @@ class User(db.Model):
     posts = db.relationship("Post", backref="author", lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.username}','{self.image_file}')"
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
 
 class Post(db.Model):
@@ -22,11 +25,11 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     def __repr__(self):
-        return f"Post('{self.title}', '{self.username}','{self.date_posted}')"
+        return f"Post('{self.title}', '{self.date_posted}')"
 
 
 # now with all the code above, we can create the db, to do it:
-# run in the console's project:
+# run in the root console's project (not inside flaskblog, but the root, where run.py is):
 #    python
 #    from flaskblog import db
 #    db.create_all()

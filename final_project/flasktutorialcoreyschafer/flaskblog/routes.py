@@ -11,7 +11,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
+    page = request.args.get("page", 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=2)
     return render_template("home.html", posts=posts)
 
 
@@ -134,8 +135,8 @@ def update_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id))
+        flash("Your post has been updated!", "success")
+        return redirect(url_for("post", post_id=post.id))
     elif request.method == "GET":
         form.title.data = post.title
         form.content.data = post.content
@@ -152,5 +153,45 @@ def delete_post(post_id):
         abort(403)
     db.session.delete(post)
     db.session.commit()
-    flash('Your post has been deleted!', 'success')
+    flash("Your post has been deleted!", "success")
     return redirect(url_for("home"))
+
+
+######## start - add dummy posts to the blog ########
+# this is part of part 9, to add pagination to the blog
+import json
+
+# put this in your routes.py
+# then add "import json" in routes.py
+# save the json in static folder with the name "posts.json"
+# then got to localhost:5000/debug_add_posts
+# warning: make sure you already have 2 users before doing this!
+@app.route("/debug_add_posts")
+def debug_add_post():
+    json_path = os.path.join(app.root_path, "static", "posts.json")
+    with open(json_path) as json_file:
+        data = json.load(json_file)
+        for post_data in data:
+            author = User.query.get(post_data["user_id"])
+            post = Post(
+                title=post_data["title"], content=post_data["content"], author=author
+            )
+            db.session.add(post)
+            db.session.commit()
+    flash("Posts have been added!", "success")
+    return redirect(url_for("home"))
+
+
+######## end - add dummy posts to the blog ########
+
+
+@app.route("/user/<string:username>")
+def user_posts(username):
+    page = request.args.get("page", 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = (
+        Post.query.filter_by(author=user)
+        .order_by(Post.date_posted.desc())
+        .paginate(page=page, per_page=5)
+    )
+    return render_template("user_posts.html", posts=posts, user=user)

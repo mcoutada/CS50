@@ -18,7 +18,7 @@ def new_post():
         db.session.add(post)
         db.session.commit()
         flash("Your post has been created!", "success")
-        return redirect(url_for("posts.home"))
+        return redirect(url_for("main.home"))
     return render_template(
         "create_post.html", title="New Post", form=form, legend="New Post"
     )
@@ -60,7 +60,8 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash("Your post has been deleted!", "success")
-    return redirect(url_for("posts.home"))
+    return redirect(url_for("main.home"))
+
 
 ######## start - add dummy posts to the blog ########
 # this is part of part 9, to add pagination to the blog
@@ -84,7 +85,7 @@ def debug_add_post():
             db.session.add(post)
             db.session.commit()
     flash("Posts have been added!", "success")
-    return redirect(url_for("posts.home"))
+    return redirect(url_for("main.home"))
 
 
 ######## end - add dummy posts to the blog ########

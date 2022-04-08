@@ -315,8 +315,8 @@ void lock_pairs(void)
     // The key here is to understand that the edges to build this alternative way to reach "A" HAVE TO BE LOCKED
     // why? Because we already sorted them by victory strength, so we start processing good guys, locking them, then look if any of the next ones create a loop
     // The locked array is our graph, and it’s dynamic, it’s empty on the first iteration (that’s why we can safely lock the first edge, it has nothing to cycle with), and starts getting bigger (or equal, if we don’t lock) over the next iterations (edges being processed), therefore we have to do more tests for later edges in order to safely lock them.
-    // for instance, we first process A-->B, there's no locked edge yet as it's the first one, so we lock it. Then, we process B-->C
-    // let´s say we lock  A-->B, the next question we ask is if B-->C generates a loop in our graph (which is only A-->B, so we ask if the edge B-->C == B-->A) it’s not, so we lock B-->C.
+    // for instance, we first process A-->B, there's no locked edge yet as it's the first one, so we lock it. Then, we process B-->C.
+    // The next question we ask is if B-->C generates a loop in our graph (which is only A-->B, so we ask if the edge B-->C == B-->A) it’s not, so we lock B-->C.
     // Read this exercise's description part carefully:
     // "Tideman algorithm must be careful to avoid creating cycles in the candidate graph. How does it do this? The algorithm locks in the strongest edges first, since those are arguably the most significant. In particular, the Tideman algorithm specifies that matchup edges should be “locked in” to the graph one at a time, based on the “strength” of the victory (the more people who prefer a candidate over their opponent, the stronger the victory). So long as the edge can be locked into the graph without creating a cycle, the edge is added; otherwise, the edge is ignored."
 
@@ -325,7 +325,7 @@ void lock_pairs(void)
     // the simplest case would be this cycle: E-->F-->E (2 opposite edges: E-->F, F-->E)
     // we process E-->F, it's the first one so no alternative way to reach E departing from F, so we lock it.
     // but then we process F-->E so there's a cycle (E-->F-->E) as E-->F was already locked, so we don't lock F-->E
-    // LET'S CALL THIS, THE BASE CASE, as it's the simplest one, but this concept will be important for recursion
+    // LET'S CALL THIS, THE BASE CASE, as it's the simplest one, but this concept will be important later for recursion
 
     // the next case that could happen is this cycle: E-->F-->H-->E (3 edges: E-->F, F-->H, H-->E)
     // we process E-->F, as it's the first one, we lock it.
